@@ -1,6 +1,6 @@
 # ld50-sandbox
 これはすごいゲームです
 すごご
-こんばんみ
+んばんみ
 わはは riyadazo はkawaiiくてsugoiDAZO~
 頑張るぞ～
