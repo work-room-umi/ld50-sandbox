@@ -3,3 +3,4 @@
 すごご
 こんばんみ
 わはは riyadazo はkawaiiくてsugoiDAZO~
+頑張るぞ～
