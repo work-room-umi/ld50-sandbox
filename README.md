@@ -2,3 +2,4 @@
 これはすごいゲームです
 すごご
 こんばんみ
+わはは riyadazo はkawaiiくてsugoiDAZO~
