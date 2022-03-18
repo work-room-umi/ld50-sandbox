@@ -1,1 +1,2 @@
-url = https://gitbucket.ray45422.net/git/work-room-umi/ld50-sandbox.git/info/lfs
+[lfs]
+    url = https://gitbucket.ray45422.net/git/work-room-umi/ld50-sandbox.git/info/lfs
