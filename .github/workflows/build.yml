@@ -19,6 +19,11 @@ jobs:
       - name: lfs-checkout
         run: |
           git lfs pull
+      - uses: actions/cache@v2
+        with:
+          path: Library
+          key: Library-${{ matrix.targetPlatform }}
+          restore-keys: Library-
       - name: UnityBuild-${{ matrix.targetPlatform }}
         shell: powershell
         run: |
