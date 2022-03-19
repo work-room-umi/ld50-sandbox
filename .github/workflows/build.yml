@@ -18,6 +18,7 @@ jobs:
       - name: lfs-checkout
         run: |
           git lfs pull
+          git lfs ls-files
       - uses: actions/cache@v2
         with:
           path: Library
