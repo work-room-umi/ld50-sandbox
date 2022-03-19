@@ -8,7 +8,7 @@ jobs:
     runs-on: self-hosted
     strategy:
       fail-fast: false
-      matrix:e
+      matrix:
         targetPlatform:
           - StandaloneWindows # Build a Windows standalone.
     steps:
@@ -19,9 +19,6 @@ jobs:
       - name: lfs-checkout
         run: |
           git lfs pull
-      - uses: game-ci/unity-builder@v2
-        with:
-          targetPlatform: ${{ matrix.targetPlatform }}
       - name: UnityBuild-${{ matrix.targetPlatform }}
         shell: powershell
         run: |
