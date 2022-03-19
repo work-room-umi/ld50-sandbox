@@ -15,7 +15,7 @@ MonoBehaviour:
   prefabOutputPath: Assets/{name}
   assetOutputDirectoryPath: Assets/{name}/
   metaOutputPath: Assets/{name}Meta
-  fontDirectoryPath: Assets/Fonts/
+  fontDirectoryPath: Assets/Project/Prefabs/UI/Fonts
   texturePreset: {fileID: 0}
   triggers: []
   spriteSaveScale: 1
