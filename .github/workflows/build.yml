@@ -5,7 +5,7 @@ on: [push, pull_request]
 jobs:
   buildForWindows:
     name: Build for ${{ matrix.targetPlatform }}
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       fail-fast: false
       matrix:
@@ -15,6 +15,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
+          clean: true
       - name: lfs-checkout
         run: |
           git lfs pull
@@ -23,11 +24,18 @@ jobs:
           path: Library
           key: Library-${{ matrix.targetPlatform }}
           restore-keys: Library-
-      - uses: game-ci/unity-builder@v2
-        env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-        with:
-          targetPlatform: ${{ matrix.targetPlatform }}
+      - name: UnityBuild-${{ matrix.targetPlatform }}
+        shell: powershell
+        run: |
+          $UNITY_VERSION = Get-Content '.\ProjectSettings\ProjectVersion.txt' | Where-Object {$_ -match '^m_EditorVersion: .+'} | ForEach-Object {$_ -replace 'm_EditorVersion: (.+)', '$1'}
+          if($null -eq $UNITY_VERSION) {
+              throw 'Could not detect Unity version'
+          }
+          $UNITY_EXECUTABLE = "C:\Program Files\Unity\Hub\Editor\${UNITY_VERSION}\Editor\Unity.exe"
+          if(!(Test-Path $UNITY_EXECUTABLE)) {
+              throw "Could not found Installed Unity version: ${UNITY_VERSION}"
+          }
+          & $UNITY_EXECUTABLE -quit -batchmode -nographics -executeMethod 'CI.Builder.Build' | Out-Host
       - uses: actions/upload-artifact@v2
         with:
           name: Build-${{ matrix.targetPlatform }}
