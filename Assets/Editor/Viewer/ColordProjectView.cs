@@ -10,8 +10,18 @@ namespace WorkRoomuUmi.Develop
     {
         const string MenuPath = "Develop/Editor Custom/ColoredProjectView (Kind)";
         static readonly string[] Keywords = {
-            "scene", "material", "editor", "resource", "prefab", "shader", "script"
+            "scene",
+            "material",
+            "editor",
+            "resource",
+            "prefab",
+            "shader",
+            "script",
+            "model",
+            "texture"
         };
+
+        const float alphaIntensity = 0.3f;
 
         [MenuItem(MenuPath)]
         static void ToggleEnabled()
@@ -20,6 +30,11 @@ namespace WorkRoomuUmi.Develop
         }
 
         [InitializeOnLoadMethod]
+        static void Init()
+        {
+            SetEvent();
+        }
+
         static void SetEvent()
         {
             EditorApplication.projectWindowItemOnGUI += OnGUI;
@@ -36,9 +51,15 @@ namespace WorkRoomuUmi.Develop
             var pathLevel = CountWord(assetPath, "/");
 
             var originalColor = GUI.color;
+            var originalBackground = Texture2D.whiteTexture;
+
             GUI.color = GetColor(pathLevel, assetPath);
+            GUI.skin.box.normal.background = Texture2D.whiteTexture;
+
             GUI.Box(selectionRect, string.Empty);
+
             GUI.color = originalColor;
+            GUI.skin.box.normal.background = originalBackground;
         }
 
         static int CountWord(string source, string word)
@@ -46,7 +67,7 @@ namespace WorkRoomuUmi.Develop
             return source.Length - source.Replace(word, "").Length;
         }
 
-        static Color GetColor(int pathLevel, string assetPath)
+        static Color GetColor(in int pathLevel, in string assetPath)
         {
             int id, depth;
             (id, depth) = GetColorIdAndDepth(pathLevel, assetPath);
@@ -54,10 +75,7 @@ namespace WorkRoomuUmi.Develop
             Color color = (EditorGUIUtility.isProSkin)
                 ? GetColorForDarkSkin(id)
                 : GetColorForLightSkin(id);
-
-            float alphaFactor = 1.0f - (depth * 0.1f);
-            alphaFactor = Mathf.Clamp(alphaFactor, 0, 1f);
-            color.a *= alphaFactor;
+            color.a *= alphaIntensity;
             return color;
         }
 
@@ -66,12 +84,10 @@ namespace WorkRoomuUmi.Develop
             return Directory.Exists(assetPath);
         }
 
-        static (int id, int depth) GetColorIdAndDepth(int pathLevel, string assetPath)
+        static (int id, int depth) GetColorIdAndDepth(in int pathLevel, in string assetPath)
         {
             if (isDirectory(assetPath))
             {
-                if (pathLevel == 1) { return (0, 0); }
-
                 int depthBase = 0;
                 string[] folderNames = assetPath.Split('/').Reverse().ToArray();
                 foreach (string folderName in folderNames)
@@ -81,7 +97,7 @@ namespace WorkRoomuUmi.Develop
                     {
                         if (lowerName.StartsWith(Keywords[i]))
                         {
-                            return ((i % 7) + 1, pathLevel - depthBase);
+                            return (i, pathLevel - depthBase);
                         }
                     }
                     ++depthBase;
@@ -90,36 +106,24 @@ namespace WorkRoomuUmi.Develop
             return (-1, 0);
         }
 
-        static Color GetColorForDarkSkin(int id)
+        static Color GetColorForDarkSkin(in int id)
         {
-            switch (id % 8)
-            {
-                case 0: return new Color(8.4f, 8.4f, 0.0f, 0.45f);
-                case 1: return new Color(9.6f, 0.5f, 0.5f, 0.50f);
-                case 2: return new Color(0.0f, 9.6f, 0.0f, 0.40f);
-                case 3: return new Color(8.4f, 0.0f, 8.4f, 0.50f);
-                case 4: return new Color(9.6f, 3.5f, 0.0f, 0.50f);
-                case 5: return new Color(0.0f, 4.8f, 9.6f, 0.40f);
-                case 6: return new Color(9.6f, 3.0f, 3.0f, 0.50f);
-                case 7: return new Color(2.0f, 2.0f, 9.6f, 0.65f);
+            if(id<0){
+                return new Color(0, 0, 0, 0);
             }
-            return new Color(0, 0, 0, 0);
+            float h = ((float)id/(float)Keywords.Length);
+            var result = Color.HSVToRGB(h,1f,1f);
+            return result;
         }
 
-        static Color GetColorForLightSkin(int id)
+        static Color GetColorForLightSkin(in int id)
         {
-            switch (id % 8)
-            {
-                case 0: return new Color(1.4f, 1.4f, 0.0f, 0.15f);
-                case 1: return new Color(1.6f, 0.0f, 0.0f, 0.15f);
-                case 2: return new Color(0.0f, 1.6f, 0.0f, 0.15f);
-                case 3: return new Color(0.8f, 0.0f, 1.4f, 0.15f);
-                case 4: return new Color(1.6f, 0.5f, 0.0f, 0.15f);
-                case 5: return new Color(0.0f, 0.8f, 1.6f, 0.15f);
-                case 6: return new Color(1.6f, 0.4f, 0.4f, 0.15f);
-                case 7: return new Color(0.2f, 0.2f, 1.6f, 0.15f);
+            if(id<0){
+                return new Color(0, 0, 0, 0);
             }
-            return new Color(0, 0, 0, 0);
+            float h = ((float)id/(float)Keywords.Length);
+            var result = Color.HSVToRGB(h,1f,1f);
+            return result;
         }
     }
 }
