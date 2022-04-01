@@ -41,6 +41,7 @@ jobs:
           }
           & $UNITY_EXECUTABLE -quit -batchmode -nographics -executeMethod 'CI.Builder.Build' | Out-Host
           $BUILD_PATH = "Build/${{ matrix.targetPlatform }}"
+          $BUILD_PATH | Out-Host
           if(!(Test-Path $BUILD_PATH)) {
               throw 'Artifact not found'
           }
