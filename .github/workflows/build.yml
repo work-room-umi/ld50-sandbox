@@ -40,6 +40,11 @@ jobs:
               throw "Could not found Installed Unity version: ${UNITY_VERSION}"
           }
           & $UNITY_EXECUTABLE -quit -batchmode -nographics -executeMethod 'CI.Builder.Build' | Out-Host
+          $BUILD_PATH = "Build/${{ matrix.targetPlatform }}"
+          $BUILD_PATH | Out-Host
+          if(!(Test-Path $BUILD_PATH)) {
+              throw 'Artifact not found'
+          }
       - uses: actions/upload-artifact@v2
         with:
           name: Build-${{ matrix.targetPlatform }}
