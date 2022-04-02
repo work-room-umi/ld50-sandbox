@@ -5,6 +5,8 @@ on:
     branches:
       - 'master'
     types: [opened, synchronize, closed]
+  tags:
+    - v*
 
 jobs:
   buildForWindows:
@@ -49,3 +51,9 @@ jobs:
         with:
           name: Build-${{ matrix.targetPlatform }}
           path: build/${{ matrix.targetPlatform }}
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          name: Build-${{ matrix.targetPlatform }}
+          files: "build/${{ matrix.targetPlatform }}/**"
